@@ -5,6 +5,7 @@ import 'package:coherence_arcana/hand_card_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'card_data.dart';
+import 'dart:math' as math;
 
 // Constants for theme colors, making it easy to change the color scheme.
 const Color _backgroundColor = Color(0xFFFDD8AA); // Light orange/peach
@@ -29,8 +30,8 @@ class CoherenceArcanaGame extends StatefulWidget {
 class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   // Game dimensions and limits.
   static const int _boardRows = 3;
-  static const int _boardCols = 5;
-  static const int _playerHandSize = 5;
+  static const int _boardCols = 6;
+  static const int _playerHandSize = 12;
   static const int _utilitySlotCount = 4;
   static const double _maxDecoherence =
       30.0; // Maximum value for the decoherence meter.
@@ -192,6 +193,9 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         symbolColor: _symbolColor,
       ),
     ];
+    while (_playerHand.length < _playerHandSize) {
+      _playerHand.add(null);
+    }
   }
 
   // Handles a card being dropped onto the board.
@@ -284,6 +288,10 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         _decoherenceMeterProgress = 0.0; // Reset meter.
         _initializeGameState(); // Re-initialize all card positions.
       });
+    } else if (action == 'Measure') {
+      // TODO: Add logic for system submission and score calculation
+    } else if (action == 'Discard') {
+      // TODO: Add logic for discarding cards from player hand
     }
   }
 
@@ -311,6 +319,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       backgroundColor: _backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           // Wrapped the Column in SingleChildScrollView to prevent overflow
           child: Column(
             children: <Widget>[
@@ -458,23 +467,25 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
+                    // Allow up to 6 cards per row; extra cards wrap to new rows.
+                    final int cardsPerRow = math.min(6, _playerHandSize);
                     final double cardWidth =
                         (constraints.maxWidth -
                             (16.0 * 2) -
-                            (8.0 * (_playerHandSize - 1))) /
-                        _playerHandSize;
-                    final double cardHeight =
-                        cardWidth * 1.4; // Aspect ratio for cards.
+                            (8.0 * (cardsPerRow - 1))) /
+                        cardsPerRow;
+                    final double cardHeight = cardWidth * 1.4;
 
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.start,
                       children: _playerHand.asMap().entries.map<Widget>((
-                        MapEntry<int, CardData?> entry,
+                        entry,
                       ) {
                         final int index = entry.key;
                         final CardData? card = entry.value;
                         return HandCardSlot(
-                          // Changed from DraggableCard
                           cardData:
                               card ??
                               CardData.empty(
@@ -488,8 +499,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                               _decoherenceMeterProgress < _maxDecoherence,
                           width: cardWidth,
                           height: cardHeight,
-                          onCardDroppedToHand:
-                              _onBoardCardDroppedToHand, // New callback
+                          onCardDroppedToHand: _onBoardCardDroppedToHand,
                         );
                       }).toList(),
                     );

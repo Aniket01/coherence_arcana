@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
       title: 'Coherence Arcana',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
-        // Using Google Fonts for a sci-fi/retro feel.
         textTheme: GoogleFonts.getTextTheme(
           'Press Start 2P',
           Theme.of(context).textTheme,
@@ -108,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

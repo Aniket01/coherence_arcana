@@ -1,16 +1,9 @@
-# coherence_arcana
+# Coherence Arcana
 
-A new Flutter project.
+**Coherence Arcana** is a single-player, quantum-themed strategic card game where you build fragile quantum circuits before reality collapses.
+Arrange qubits, apply quantum gates, and maintain coherence as long as possible — every move brings you closer to quantum perfection… or noisy chaos.
 
-## Getting Started
+## Gameplay Overview
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You start with a deck of **Qubits, Gates, Measurements, Artifacts** cards.
+Your goal: build the most coherent, high-scoring quantum circuit before the **Decoherence Meter** fills up.
