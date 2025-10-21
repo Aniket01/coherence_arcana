@@ -17,7 +17,7 @@ final LevelData level4 = LevelData(
   // Initial Utility & Artifacts slots
   initialUtilitySlots: <CardData?>[
     CardData(
-      id: 'filter-card',
+      id: 'Noise Filter',
       symbol: 'FILTER',
       cornerIconTopLeft: Icons.tune,
       cornerIconBottomRight: Icons.timer,
@@ -25,7 +25,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor, // From game_theme.dart
     ),
     CardData(
-      id: 'potion-card',
+      id: 'Cryogenic Core',
       symbol: 'POTION',
       cornerIconTopLeft: Icons.lightbulb_outline,
       cornerIconBottomRight: Icons.bolt,
@@ -45,7 +45,7 @@ final LevelData level4 = LevelData(
     );
     // Populate initial board cells
     board[0][0] = CardData(
-      id: 'psi-card-00',
+      id: 'Qubit psi',
       symbol: '|ψ⟩',
       cornerIconTopLeft: Icons.schedule,
       cornerIconBottomRight: Icons.schedule,
@@ -53,7 +53,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[0][3] = CardData(
-      id: 'h-card-03',
+      id: 'Hadamard gate',
       symbol: 'H',
       cornerIconTopLeft: Icons.settings_input_component,
       cornerIconBottomRight: Icons.settings_input_component,
@@ -61,7 +61,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[1][0] = CardData(
-      id: 'zero-card-10',
+      id: 'Qubit 0',
       symbol: '|0⟩',
       cornerIconTopLeft: Icons.schedule,
       cornerIconBottomRight: Icons.schedule,
@@ -69,7 +69,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[1][1] = CardData(
-      id: 'h-card-11',
+      id: 'Hadamard gate',
       symbol: 'H',
       cornerIconTopLeft: Icons.settings_input_component,
       cornerIconBottomRight: Icons.settings_input_component,
@@ -77,7 +77,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[1][3] = CardData(
-      id: 'cnot-card-13',
+      id: 'CNOT gate',
       symbol: 'CNOT',
       cornerIconTopLeft: Icons.settings_input_component,
       cornerIconBottomRight: Icons.settings_input_component,
@@ -85,15 +85,23 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[2][0] = CardData(
-      id: 'zero-card-20',
+      id: 'Qubit 0',
       symbol: '|0⟩',
       cornerIconTopLeft: Icons.schedule,
       cornerIconBottomRight: Icons.schedule,
       cardColor: cardColor,
       symbolColor: symbolColor,
     );
+    board[2][2] = CardData(
+      id: 'CNOT gate',
+      symbol: 'X',
+      cornerIconTopLeft: Icons.settings_input_component,
+      cornerIconBottomRight: Icons.settings_input_component,
+      cardColor: cardColor,
+      symbolColor: symbolColor,
+    );
     board[2][3] = CardData(
-      id: 'x-card-23',
+      id: 'X gate',
       symbol: 'X',
       cornerIconTopLeft: Icons.settings_input_component,
       cornerIconBottomRight: Icons.settings_input_component,
@@ -101,7 +109,7 @@ final LevelData level4 = LevelData(
       symbolColor: symbolColor,
     );
     board[2][4] = CardData(
-      id: 'z-card-24',
+      id: 'Z gate',
       symbol: 'Z',
       cornerIconTopLeft: Icons.settings_input_component,
       cornerIconBottomRight: Icons.settings_input_component,
@@ -115,7 +123,7 @@ final LevelData level4 = LevelData(
   initialPlayerHand: () {
     var hand = <CardData?>[
       CardData(
-        id: 'one-hand',
+        id: 'Qubit 1',
         symbol: '|1⟩',
         cornerIconTopLeft: Icons.schedule,
         cornerIconBottomRight: Icons.schedule,
@@ -123,7 +131,7 @@ final LevelData level4 = LevelData(
         symbolColor: symbolColor,
       ),
       CardData(
-        id: 'zero-hand',
+        id: 'Qubit 0',
         symbol: '|0⟩',
         cornerIconTopLeft: Icons.schedule,
         cornerIconBottomRight: Icons.schedule,
@@ -131,7 +139,7 @@ final LevelData level4 = LevelData(
         symbolColor: symbolColor,
       ),
       CardData(
-        id: 'p-hand',
+        id: 'Phase gate',
         symbol: 'P',
         cornerIconTopLeft: Icons.settings_input_component,
         cornerIconBottomRight: Icons.settings_input_component,
@@ -139,7 +147,7 @@ final LevelData level4 = LevelData(
         symbolColor: symbolColor,
       ),
       CardData(
-        id: 'cnot-hand',
+        id: 'CNOT gate',
         symbol: 'CNOT',
         cornerIconTopLeft: Icons.settings_input_component,
         cornerIconBottomRight: Icons.settings_input_component,
@@ -147,7 +155,7 @@ final LevelData level4 = LevelData(
         symbolColor: symbolColor,
       ),
       CardData(
-        id: 'decohered-hand',
+        id: 'Decohering qubit',
         symbol: 'DECOHERED',
         cornerIconTopLeft: Icons.blur_on,
         cornerIconBottomRight: Icons.scatter_plot,

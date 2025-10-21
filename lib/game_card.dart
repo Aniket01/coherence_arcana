@@ -1,7 +1,6 @@
 // A reusable widget for displaying a single game card.
 import 'package:coherence_arcana/card_data.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const Color _emptySlotBackgroundColor = Color(
   0x33F9C07F,
@@ -25,52 +24,44 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Construct the asset path from the card's ID.
+    // Example: id 'psi-card' becomes 'assets/cards/psi-card.png'
+    final String assetPath = 'assets/cards/${cardData.id}.png';
+
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: isEmpty ? _emptySlotBackgroundColor : cardData.cardColor,
+        // The image itself provides the background, so we make the
+        // container transparent if it's not an empty slot.
+        color: isEmpty ? _emptySlotBackgroundColor : Colors.transparent,
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(color: cardBorderColor, width: 2.0),
       ),
       child: isEmpty
           ? null // No content for empty slots.
-          : Stack(
-              children: <Widget>[
-                // Corner icons
-                if (cardData.cornerIconTopLeft != null)
-                  Positioned(
-                    top: 4.0,
-                    left: 4.0,
+          : ClipRRect(
+              // Clip the image to the rounded corners,
+              // slightly smaller than the container to fit inside the border.
+              borderRadius: BorderRadius.circular(6.0),
+              child: Image.asset(
+                assetPath,
+                width: width,
+                height: height,
+                // BoxFit.cover ensures the image fills the card space,
+                // cropping if necessary, without distorting aspect ratio.
+                fit: BoxFit.cover,
+                // Add a simple error builder in case an asset is missing
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
                     child: Icon(
-                      cardData.cornerIconTopLeft,
-                      color: cardData.symbolColor,
-                      size: 16.0,
+                      Icons.broken_image,
+                      color: Colors.red,
+                      size: 24,
                     ),
-                  ),
-                if (cardData.cornerIconBottomRight != null)
-                  Positioned(
-                    bottom: 4.0,
-                    right: 4.0,
-                    child: Icon(
-                      cardData.cornerIconBottomRight,
-                      color: cardData.symbolColor,
-                      size: 16.0,
-                    ),
-                  ),
-                // Main symbol
-                Center(
-                  child: Text(
-                    cardData.symbol,
-                    style: GoogleFonts.getFont('Press Start 2P').copyWith(
-                      color: cardData.symbolColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
     );
   }
