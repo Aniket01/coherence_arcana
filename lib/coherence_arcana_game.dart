@@ -7,46 +7,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'card_data.dart';
 import 'dart:math' as math;
 
-// Constants for theme colors, making it easy to change the color scheme.
-const Color _backgroundColor = Color(0xFFFDD8AA); // Light orange/peach
-const Color _cardColor = Color(0xFFE89393); // Pinkish salmon
-const Color _cardBorderColor = Color(
-  0xFFF9C07F,
-); // Slightly darker peach for contrast
-const Color _symbolColor = Color(0xFF5C3D6D); // Dark purple
-const Color _meterFillColor = Color(0xFF5C3D6D); // Dark purple
-const Color _meterTrackColor = Color(0xFFC7B198); // Lighter track color
-const Color _emptySlotBackgroundColor = Color(
-  0x33F9C07F,
-); // Transparent version of card border for empty slots
+import 'game_theme.dart'; // Import the new theme file
+import 'level_data.dart'; // Import the new LevelData class
 
 class CoherenceArcanaGame extends StatefulWidget {
-  const CoherenceArcanaGame({super.key});
+  // The game now requires LevelData to be passed in.
+  final LevelData levelData;
+
+  const CoherenceArcanaGame({super.key, required this.levelData});
 
   @override
   State<CoherenceArcanaGame> createState() => _CoherenceArcanaGameState();
 }
 
 class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
-  // Game dimensions and limits.
-  static const int _boardRows = 3;
-  static const int _boardCols = 6;
-  static const int _playerHandSize = 12;
-  static const int _utilitySlotCount = 4;
-  static const double _maxDecoherence =
-      30.0; // Maximum value for the decoherence meter.
-  static const double _decoherencePerAction =
-      2.0; // Amount meter increases per card drop.
-
   // Game state variables.
-  double _decoherenceMeterProgress =
-      0.0; // Current progress of the decoherence meter.
-  late List<CardData?>
-  _utilitySlots; // List of utility cards. Null for empty slots.
-  late List<List<CardData?>>
-  _boardCells; // 2D list representing the game board. Null for empty cells.
-  late List<CardData?>
-  _playerHand; // List of cards in the player's hand. Null for empty hand slots.
+  // These will be initialized from widget.levelData.
+  late double _decoherenceMeterProgress;
+  late List<CardData?> _utilitySlots;
+  late List<List<CardData?>> _boardCells;
+  late List<CardData?> _playerHand;
 
   @override
   void initState() {
@@ -54,154 +34,25 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     _initializeGameState();
   }
 
-  // Initializes all game state variables with starting data.
+  // Initializes all game state variables from the levelData.
+  // This is also used by the 'Reset' button.
   void _initializeGameState() {
-    // Utility & Artifacts cards initialization.
-    _utilitySlots = <CardData?>[
-      CardData(
-        id: 'filter-card',
-        symbol: 'FILTER',
-        cornerIconTopLeft: Icons.tune,
-        cornerIconBottomRight: Icons.timer,
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      CardData(
-        id: 'potion-card',
-        symbol: 'POTION',
-        cornerIconTopLeft: Icons.lightbulb_outline,
-        cornerIconBottomRight: Icons.bolt, // Representing the 'spark' icon.
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      null, // Empty slot
-      null, // Empty slot
-    ];
+    _decoherenceMeterProgress = 0.0; // Always reset meter
 
-    // Board cells initialization.
-    _boardCells = List<List<CardData?>>.generate(
-      _boardRows,
-      (int row) => List<CardData?>.filled(_boardCols, null),
-    );
-    // Populate some initial board cells based on the image.
-    _boardCells[0][0] = CardData(
-      id: 'psi-card-00',
-      symbol: '|ψ⟩',
-      cornerIconTopLeft: Icons.schedule,
-      cornerIconBottomRight: Icons.schedule,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[0][3] = CardData(
-      id: 'h-card-03',
-      symbol: 'H',
-      cornerIconTopLeft: Icons.settings_input_component,
-      cornerIconBottomRight: Icons.settings_input_component,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[1][0] = CardData(
-      id: 'zero-card-10',
-      symbol: '|0⟩',
-      cornerIconTopLeft: Icons.schedule,
-      cornerIconBottomRight: Icons.schedule,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[1][1] = CardData(
-      id: 'h-card-11',
-      symbol: 'H',
-      cornerIconTopLeft: Icons.settings_input_component,
-      cornerIconBottomRight: Icons.settings_input_component,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[1][3] = CardData(
-      id: 'cnot-card-13',
-      symbol: 'CNOT', // Simplified symbol for CNOT gate
-      cornerIconTopLeft: Icons.settings_input_component,
-      cornerIconBottomRight: Icons.settings_input_component,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[2][0] = CardData(
-      id: 'zero-card-20',
-      symbol: '|0⟩',
-      cornerIconTopLeft: Icons.schedule,
-      cornerIconBottomRight: Icons.schedule,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[2][3] = CardData(
-      id: 'x-card-23',
-      symbol: 'X',
-      cornerIconTopLeft: Icons.settings_input_component,
-      cornerIconBottomRight: Icons.settings_input_component,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-    _boardCells[2][4] = CardData(
-      id: 'z-card-24',
-      symbol: 'Z',
-      cornerIconTopLeft: Icons.settings_input_component,
-      cornerIconBottomRight: Icons.settings_input_component,
-      cardColor: _cardColor,
-      symbolColor: _symbolColor,
-    );
-
-    // Player hand initialization.
-    _playerHand = <CardData?>[
-      CardData(
-        id: 'one-hand',
-        symbol: '|1⟩',
-        cornerIconTopLeft: Icons.schedule,
-        cornerIconBottomRight: Icons.schedule,
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      CardData(
-        id: 'zero-hand',
-        symbol: '|0⟩',
-        cornerIconTopLeft: Icons.schedule,
-        cornerIconBottomRight: Icons.schedule,
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      CardData(
-        id: 'p-hand',
-        symbol: 'P',
-        cornerIconTopLeft: Icons.settings_input_component,
-        cornerIconBottomRight: Icons.settings_input_component,
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      CardData(
-        id: 'cnot-hand',
-        symbol: 'CNOT', // Simplified symbol
-        cornerIconTopLeft: Icons.settings_input_component,
-        cornerIconBottomRight: Icons.settings_input_component,
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-      CardData(
-        id: 'decohered-hand',
-        symbol: 'DECOHERED',
-        cornerIconTopLeft: Icons.blur_on, // Placeholder for decohered visual.
-        cornerIconBottomRight:
-            Icons.scatter_plot, // Placeholder for decohered visual.
-        cardColor: _cardColor,
-        symbolColor: _symbolColor,
-      ),
-    ];
-    while (_playerHand.length < _playerHandSize) {
-      _playerHand.add(null);
-    }
+    // Create deep copies of the lists from levelData.
+    // This is crucial so that resizing the 'Reset' button works correctly
+    // and doesn't just point to the already-modified state.
+    _utilitySlots = List<CardData?>.from(widget.levelData.initialUtilitySlots);
+    _boardCells = widget.levelData.initialBoardCells
+        .map((row) => List<CardData?>.from(row))
+        .toList();
+    _playerHand = List<CardData?>.from(widget.levelData.initialPlayerHand);
   }
 
   // Handles a card being dropped onto the board.
   void _onCardDropped(int targetRow, int targetCol, Map<String, dynamic> data) {
-    // Check if the decoherence meter is full.
-    if (_decoherenceMeterProgress >= _maxDecoherence) {
+    // Check if the decoherence meter is full using levelData.
+    if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
       return; // Cannot take more actions.
     }
 
@@ -227,12 +78,10 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         _boardCells[originalRow][originalCol] = null;
       }
 
-      // Increase the decoherence meter.
+      // Increase the decoherence meter using levelData.
       _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + _decoherencePerAction).clamp(
-            0.0,
-            _maxDecoherence,
-          );
+          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
+              .clamp(0.0, widget.levelData.maxDecoherence);
     });
   }
 
@@ -241,7 +90,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     int targetHandIndex,
     Map<String, dynamic> data,
   ) {
-    if (_decoherenceMeterProgress >= _maxDecoherence) {
+    if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
       return; // Cannot take more actions.
     }
 
@@ -253,8 +102,6 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     final CardData cardData = data['cardData'] as CardData;
     final String source = data['source'] as String;
 
-    // This callback is specifically for dropping *board* cards *to hand*.
-    // So 'source' should always be 'board'.
     if (source != 'board') {
       return;
     }
@@ -270,10 +117,8 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
 
       // Increase the decoherence meter.
       _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + _decoherencePerAction).clamp(
-            0.0,
-            _maxDecoherence,
-          );
+          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
+              .clamp(0.0, widget.levelData.maxDecoherence);
     });
   }
 
@@ -284,14 +129,12 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
 
   // Handles button presses (Discard, Measure, Reset).
   void _onButtonPressed(String action) {
-    // Placeholder for actual game logic.
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('$action button pressed!')));
     if (action == 'Reset') {
       setState(() {
-        _decoherenceMeterProgress = 0.0; // Reset meter.
-        _initializeGameState(); // Re-initialize all card positions.
+        _initializeGameState(); // Re-initialize all card positions from levelData.
       });
     } else if (action == 'Measure') {
       // TODO: Add logic for system submission and score calculation
@@ -309,7 +152,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         child: Text(
           title.toUpperCase(),
           style: GoogleFonts.getFont('Press Start 2P').copyWith(
-            color: _symbolColor,
+            color: symbolColor, // Use theme color
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
@@ -321,11 +164,10 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _backgroundColor,
+      backgroundColor: backgroundColor, // Use theme color
       body: SafeArea(
         child: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
-          // Wrapped the Column in SingleChildScrollView to prevent overflow
           child: Column(
             children: <Widget>[
               // --- Level and Decoherence Meter Section ---
@@ -336,9 +178,10 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'LEVEL 4',
+                        // Use level number from levelData
+                        'LEVEL ${widget.levelData.levelNumber}',
                         style: GoogleFonts.getFont('Press Start 2P').copyWith(
-                          color: _symbolColor,
+                          color: symbolColor, // Use theme color
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -350,7 +193,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                         Text(
                           'DECOHERENCE METER',
                           style: GoogleFonts.getFont('Press Start 2P').copyWith(
-                            color: _symbolColor,
+                            color: symbolColor, // Use theme color
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                           ),
@@ -358,10 +201,13 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                         const SizedBox(width: 8.0),
                         Expanded(
                           child: LinearProgressIndicator(
-                            value: _decoherenceMeterProgress / _maxDecoherence,
-                            backgroundColor: _meterTrackColor,
+                            // Use levelData for meter calculation
+                            value:
+                                _decoherenceMeterProgress /
+                                widget.levelData.maxDecoherence,
+                            backgroundColor: meterTrackColor, // Use theme color
                             valueColor: const AlwaysStoppedAnimation<Color>(
-                              _meterFillColor,
+                              meterFillColor, // Use theme color
                             ),
                             minHeight: 12.0,
                             borderRadius: BorderRadius.circular(6.0),
@@ -375,14 +221,16 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
               const SizedBox(height: 16.0),
 
               // --- Utility & Artifacts Section ---
-              // TODO: Create a util_card_slot.dart file for UtilCardSlot class
               _buildSectionTitle('Utility & Artifacts'),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     final double cardWidth =
-                        (constraints.maxWidth - (16.0 * 2) - (8.0 * 3)) / 4;
+                        (constraints.maxWidth -
+                            (16.0 * 2) -
+                            (8.0 * (widget.levelData.utilitySlotCount - 1))) /
+                        widget.levelData.utilitySlotCount;
                     final double cardHeight =
                         cardWidth * 1.4; // Aspect ratio for cards.
 
@@ -390,21 +238,23 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _utilitySlotCount,
+                        // Use levelData for count
+                        crossAxisCount: widget.levelData.utilitySlotCount,
                         crossAxisSpacing: 8.0,
                         mainAxisSpacing: 8.0,
                         childAspectRatio: cardWidth / cardHeight,
                       ),
-                      itemCount: _utilitySlotCount,
+                      // Use levelData for count
+                      itemCount: widget.levelData.utilitySlotCount,
                       itemBuilder: (BuildContext context, int index) {
                         return GameCard(
                           cardData:
                               _utilitySlots[index] ??
                               CardData.empty(
-                                cardColor: _emptySlotBackgroundColor,
-                                symbolColor: _symbolColor,
+                                cardColor: emptySlotBackgroundColor,
+                                symbolColor: symbolColor,
                               ),
-                          cardBorderColor: _cardBorderColor,
+                          cardBorderColor: cardBorderColor,
                           isEmpty: _utilitySlots[index] == null,
                           width: cardWidth,
                           height: cardHeight,
@@ -419,46 +269,49 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
               // --- Board Section ---
               _buildSectionTitle('Board'),
               Padding(
-                // Removed Expanded as parent is SingleChildScrollView
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     final double cardWidth =
                         (constraints.maxWidth -
                             (16.0 * 2) -
-                            (8.0 * (_boardCols - 1))) /
-                        _boardCols;
-                    final double cardHeight =
-                        cardWidth * 1.4; // Aspect ratio for cards.
+                            (8.0 * (widget.levelData.boardCols - 1))) /
+                        widget.levelData.boardCols; // Use levelData
+                    final double cardHeight = cardWidth * 1.4;
 
                     return GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _boardCols,
+                        crossAxisCount:
+                            widget.levelData.boardCols, // Use levelData
                         crossAxisSpacing: 8.0,
                         mainAxisSpacing: 8.0,
                         childAspectRatio: cardWidth / cardHeight,
                       ),
-                      itemCount: _boardRows * _boardCols,
+                      itemCount:
+                          widget.levelData.boardRows *
+                          widget.levelData.boardCols, // Use levelData
                       itemBuilder: (BuildContext context, int index) {
-                        final int row = index ~/ _boardCols;
-                        final int col = index % _boardCols;
+                        final int row = index ~/ widget.levelData.boardCols;
+                        final int col = index % widget.levelData.boardCols;
                         return BoardCardSlot(
                           row: row,
                           col: col,
                           cardData:
                               _boardCells[row][col] ??
                               CardData.empty(
-                                cardColor: _emptySlotBackgroundColor,
-                                symbolColor: _symbolColor,
+                                cardColor: emptySlotBackgroundColor,
+                                symbolColor: symbolColor,
                               ),
-                          cardBorderColor: _cardBorderColor,
+                          cardBorderColor: cardBorderColor,
                           onCardDropped: _onCardDropped,
                           isEmpty: _boardCells[row][col] == null,
                           width: cardWidth,
                           height: cardHeight,
-                          canDrag: _decoherenceMeterProgress < _maxDecoherence,
+                          canDrag:
+                              _decoherenceMeterProgress <
+                              widget.levelData.maxDecoherence, // Use levelData
                         );
                       },
                     );
@@ -473,8 +326,10 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    // Allow up to 6 cards per row; extra cards wrap to new rows.
-                    final int cardsPerRow = math.min(6, _playerHandSize);
+                    final int cardsPerRow = math.min(
+                      6,
+                      widget.levelData.playerHandSize,
+                    );
                     final double cardWidth =
                         (constraints.maxWidth -
                             (16.0 * 2) -
@@ -495,14 +350,15 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                           cardData:
                               card ??
                               CardData.empty(
-                                cardColor: _emptySlotBackgroundColor,
-                                symbolColor: _symbolColor,
+                                cardColor: emptySlotBackgroundColor,
+                                symbolColor: symbolColor,
                               ),
-                          cardBorderColor: _cardBorderColor,
+                          cardBorderColor: cardBorderColor,
                           originalHandIndex: index,
                           canDrag:
                               card != null &&
-                              _decoherenceMeterProgress < _maxDecoherence,
+                              _decoherenceMeterProgress <
+                                  widget.levelData.maxDecoherence,
                           width: cardWidth,
                           height: cardHeight,
                           onCardDroppedToHand: _onBoardCardDroppedToHand,
