@@ -277,6 +277,11 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     });
   }
 
+  // ignore: unused_element
+  void _onCardDroppedToUtil() {
+    // TODO: Implement logic
+  }
+
   // Handles button presses (Discard, Measure, Reset).
   void _onButtonPressed(String action) {
     // Placeholder for actual game logic.
@@ -370,6 +375,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
               const SizedBox(height: 16.0),
 
               // --- Utility & Artifacts Section ---
+              // TODO: Create a util_card_slot.dart file for UtilCardSlot class
               _buildSectionTitle('Utility & Artifacts'),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
