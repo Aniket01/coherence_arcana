@@ -1,12 +1,14 @@
+import 'package:coherence_arcana/audio/audio_controller.dart';
+import 'package:coherence_arcana/audio/sounds.dart';
 import 'package:coherence_arcana/board_card_slot.dart';
 import 'package:coherence_arcana/game_button.dart';
 import 'package:coherence_arcana/game_card.dart';
 import 'package:coherence_arcana/hand_card_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'card_data.dart';
 import 'dart:math' as math;
-
 import 'game_theme.dart'; // Import the new theme file
 import 'level_data.dart'; // Import the new LevelData class
 
@@ -32,13 +34,23 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   void initState() {
     super.initState();
     _initializeGameState();
+    _initAudio();
+  }
+
+  void _initAudio() async {
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
+    // Initialize returns quickly if already initialized
+    await audioController.initialize();
+    audioController.playMusic();
   }
 
   // Initializes all game state variables from the levelData.
   // This is also used by the 'Reset' button.
   void _initializeGameState() {
     _decoherenceMeterProgress = 0.0; // Always reset meter
-
     // Create deep copies of the lists from levelData.
     // This is crucial so that resizing the 'Reset' button works correctly
     // and doesn't just point to the already-modified state.
@@ -51,13 +63,23 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
 
   // Handles a card being dropped onto the board.
   void _onCardDropped(int targetRow, int targetCol, Map<String, dynamic> data) {
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
     // Check if the decoherence meter is full using levelData.
     if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+      setState(() {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      });
       return; // Cannot take more actions.
     }
 
     // Ensure target cell is empty.
     if (_boardCells[targetRow][targetCol] != null) {
+      setState(() {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      });
       return;
     }
 
@@ -78,10 +100,20 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         _boardCells[originalRow][originalCol] = null;
       }
 
+      final bool wasMeterFull =
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+
       // Increase the decoherence meter using levelData.
       _decoherenceMeterProgress =
           (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
               .clamp(0.0, widget.levelData.maxDecoherence);
+
+      audioController.playSfx(SfxType.cardPlaced);
+
+      if (!wasMeterFull &&
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+        audioController.playSfx(SfxType.meterFull);
+      }
     });
   }
 
@@ -90,12 +122,23 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     int targetHandIndex,
     Map<String, dynamic> data,
   ) {
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
+
     if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+      setState(() {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      });
       return; // Cannot take more actions.
     }
 
     // Ensure target hand slot is empty.
     if (_playerHand[targetHandIndex] != null) {
+      setState(() {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      });
       return;
     }
 
@@ -103,6 +146,9 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     final String source = data['source'] as String;
 
     if (source != 'board') {
+      setState(() {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      });
       return;
     }
 
@@ -115,30 +161,73 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       // Remove the card from the board.
       _boardCells[originalBoardRow][originalBoardCol] = null;
 
+      final bool wasMeterFull =
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+
       // Increase the decoherence meter.
       _decoherenceMeterProgress =
           (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
               .clamp(0.0, widget.levelData.maxDecoherence);
+
+      audioController.playSfx(SfxType.cardPlaced);
+
+      if (!wasMeterFull &&
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+        audioController.playSfx(SfxType.meterFull);
+      }
     });
   }
 
   // ignore: unused_element
   void _onCardDroppedToUtil() {
     // TODO: Implement logic
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
+    setState(() {
+      final bool wasMeterFull =
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+
+      // Increase the decoherence meter.
+      _decoherenceMeterProgress =
+          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
+              .clamp(0.0, widget.levelData.maxDecoherence);
+
+      audioController.playSfx(SfxType.utilPlaced);
+
+      if (!wasMeterFull &&
+          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+        audioController.playSfx(SfxType.meterFull);
+      }
+    });
   }
 
   // Handles button presses (Discard, Measure, Reset).
   void _onButtonPressed(String action) {
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
+
+    // Play a sound for any button press
+    audioController.playSfx(SfxType.buttonClick);
+
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('$action button pressed!')));
     if (action == 'Reset') {
       setState(() {
+        audioController.playSfx(SfxType.buttonClick);
         _initializeGameState(); // Re-initialize all card positions from levelData.
       });
     } else if (action == 'Measure') {
+      setState(() {
+        audioController.playSfx(SfxType.buttonClick);
+      });
       // TODO: Add logic for system submission and score calculation
     } else if (action == 'Discard') {
+      audioController.playSfx(SfxType.buttonClick);
       // TODO: Add logic for discarding cards from player hand
     }
   }
