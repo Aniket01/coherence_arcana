@@ -1,7 +1,9 @@
 import 'package:coherence_arcana/coherence_arcana_game.dart';
+import 'package:coherence_arcana/level_selection/level_selection_view.dart';
+import 'package:coherence_arcana/main_menu_view.dart';
+import 'package:coherence_arcana/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'level_4.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
 
@@ -30,7 +32,12 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      home: CoherenceArcanaGame(levelData: level4),
+      home: LevelSelectionScreen(),
+      routes: {
+        levelSelectionRoute: (context) => const LevelSelectionScreen(),
+        mainMenuRoute: (context) => const MainMenuView(),
+        gameRoute: (context) => const CoherenceArcanaGame(),
+      },
     );
   }
 }

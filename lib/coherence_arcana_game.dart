@@ -4,6 +4,7 @@ import 'package:coherence_arcana/board_card_slot.dart';
 import 'package:coherence_arcana/game_button.dart';
 import 'package:coherence_arcana/game_card.dart';
 import 'package:coherence_arcana/hand_card_slot.dart';
+import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +15,9 @@ import 'level_data.dart'; // Import the new LevelData class
 
 class CoherenceArcanaGame extends StatefulWidget {
   // The game now requires LevelData to be passed in.
-  final LevelData levelData;
+  final LevelData? levelData;
 
-  const CoherenceArcanaGame({super.key, required this.levelData});
+  const CoherenceArcanaGame({super.key, this.levelData});
 
   @override
   State<CoherenceArcanaGame> createState() => _CoherenceArcanaGameState();
@@ -24,7 +25,8 @@ class CoherenceArcanaGame extends StatefulWidget {
 
 class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   // Game state variables.
-  // These will be initialized from widget.levelData.
+  // These will be initialized from levelData.
+  late final LevelData levelData;
   late double _decoherenceMeterProgress;
   late List<CardData?> _utilitySlots;
   late List<List<CardData?>> _boardCells;
@@ -33,6 +35,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   @override
   void initState() {
     super.initState();
+    levelData = widget.levelData ?? gameLevels[0];
     _initializeGameState();
     _initAudio();
   }
@@ -54,11 +57,11 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     // Create deep copies of the lists from levelData.
     // This is crucial so that resizing the 'Reset' button works correctly
     // and doesn't just point to the already-modified state.
-    _utilitySlots = List<CardData?>.from(widget.levelData.initialUtilitySlots);
-    _boardCells = widget.levelData.initialBoardCells
+    _utilitySlots = List<CardData?>.from(levelData.initialUtilitySlots);
+    _boardCells = levelData.initialBoardCells
         .map((row) => List<CardData?>.from(row))
         .toList();
-    _playerHand = List<CardData?>.from(widget.levelData.initialPlayerHand);
+    _playerHand = List<CardData?>.from(levelData.initialPlayerHand);
   }
 
   // Handles a card being dropped onto the board.
@@ -68,7 +71,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       listen: false,
     );
     // Check if the decoherence meter is full using levelData.
-    if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+    if (_decoherenceMeterProgress >= levelData.maxDecoherence) {
       setState(() {
         audioController.playSfx(SfxType.cardNotPlaced);
       });
@@ -101,17 +104,19 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       }
 
       final bool wasMeterFull =
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+          _decoherenceMeterProgress >= levelData.maxDecoherence;
 
       // Increase the decoherence meter using levelData.
       _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
-              .clamp(0.0, widget.levelData.maxDecoherence);
+          (_decoherenceMeterProgress + levelData.decoherencePerAction).clamp(
+            0.0,
+            levelData.maxDecoherence,
+          );
 
       audioController.playSfx(SfxType.cardPlaced);
 
       if (!wasMeterFull &&
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+          _decoherenceMeterProgress >= levelData.maxDecoherence) {
         audioController.playSfx(SfxType.meterFull);
       }
     });
@@ -127,7 +132,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       listen: false,
     );
 
-    if (_decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+    if (_decoherenceMeterProgress >= levelData.maxDecoherence) {
       setState(() {
         audioController.playSfx(SfxType.cardNotPlaced);
       });
@@ -162,17 +167,19 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       _boardCells[originalBoardRow][originalBoardCol] = null;
 
       final bool wasMeterFull =
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+          _decoherenceMeterProgress >= levelData.maxDecoherence;
 
       // Increase the decoherence meter.
       _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
-              .clamp(0.0, widget.levelData.maxDecoherence);
+          (_decoherenceMeterProgress + levelData.decoherencePerAction).clamp(
+            0.0,
+            levelData.maxDecoherence,
+          );
 
       audioController.playSfx(SfxType.cardPlaced);
 
       if (!wasMeterFull &&
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+          _decoherenceMeterProgress >= levelData.maxDecoherence) {
         audioController.playSfx(SfxType.meterFull);
       }
     });
@@ -187,17 +194,19 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     );
     setState(() {
       final bool wasMeterFull =
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence;
+          _decoherenceMeterProgress >= levelData.maxDecoherence;
 
       // Increase the decoherence meter.
       _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + widget.levelData.decoherencePerAction)
-              .clamp(0.0, widget.levelData.maxDecoherence);
+          (_decoherenceMeterProgress + levelData.decoherencePerAction).clamp(
+            0.0,
+            levelData.maxDecoherence,
+          );
 
       audioController.playSfx(SfxType.utilPlaced);
 
       if (!wasMeterFull &&
-          _decoherenceMeterProgress >= widget.levelData.maxDecoherence) {
+          _decoherenceMeterProgress >= levelData.maxDecoherence) {
         audioController.playSfx(SfxType.meterFull);
       }
     });
@@ -268,7 +277,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                       alignment: Alignment.center,
                       child: Text(
                         // Use level number from levelData
-                        'LEVEL ${widget.levelData.levelNumber}',
+                        'LEVEL ${levelData.levelNumber}',
                         style: GoogleFonts.getFont('Press Start 2P').copyWith(
                           color: symbolColor, // Use theme color
                           fontSize: 20,
@@ -293,7 +302,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                             // Use levelData for meter calculation
                             value:
                                 _decoherenceMeterProgress /
-                                widget.levelData.maxDecoherence,
+                                levelData.maxDecoherence,
                             backgroundColor: meterTrackColor, // Use theme color
                             valueColor: const AlwaysStoppedAnimation<Color>(
                               meterFillColor, // Use theme color
@@ -318,8 +327,8 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                     final double cardWidth =
                         (constraints.maxWidth -
                             (16.0 * 2) -
-                            (8.0 * (widget.levelData.utilitySlotCount - 1))) /
-                        widget.levelData.utilitySlotCount;
+                            (8.0 * (levelData.utilitySlotCount - 1))) /
+                        levelData.utilitySlotCount;
                     final double cardHeight =
                         cardWidth * 1.4; // Aspect ratio for cards.
 
@@ -328,13 +337,13 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         // Use levelData for count
-                        crossAxisCount: widget.levelData.utilitySlotCount,
+                        crossAxisCount: levelData.utilitySlotCount,
                         crossAxisSpacing: 8.0,
                         mainAxisSpacing: 8.0,
                         childAspectRatio: cardWidth / cardHeight,
                       ),
                       // Use levelData for count
-                      itemCount: widget.levelData.utilitySlotCount,
+                      itemCount: levelData.utilitySlotCount,
                       itemBuilder: (BuildContext context, int index) {
                         return GameCard(
                           cardData:
@@ -364,26 +373,25 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                     final double cardWidth =
                         (constraints.maxWidth -
                             (16.0 * 2) -
-                            (8.0 * (widget.levelData.boardCols - 1))) /
-                        widget.levelData.boardCols; // Use levelData
+                            (8.0 * (levelData.boardCols - 1))) /
+                        levelData.boardCols; // Use levelData
                     final double cardHeight = cardWidth * 1.4;
 
                     return GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:
-                            widget.levelData.boardCols, // Use levelData
+                        crossAxisCount: levelData.boardCols, // Use levelData
                         crossAxisSpacing: 8.0,
                         mainAxisSpacing: 8.0,
                         childAspectRatio: cardWidth / cardHeight,
                       ),
                       itemCount:
-                          widget.levelData.boardRows *
-                          widget.levelData.boardCols, // Use levelData
+                          levelData.boardRows *
+                          levelData.boardCols, // Use levelData
                       itemBuilder: (BuildContext context, int index) {
-                        final int row = index ~/ widget.levelData.boardCols;
-                        final int col = index % widget.levelData.boardCols;
+                        final int row = index ~/ levelData.boardCols;
+                        final int col = index % levelData.boardCols;
                         return BoardCardSlot(
                           row: row,
                           col: col,
@@ -400,7 +408,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                           height: cardHeight,
                           canDrag:
                               _decoherenceMeterProgress <
-                              widget.levelData.maxDecoherence, // Use levelData
+                              levelData.maxDecoherence, // Use levelData
                         );
                       },
                     );
@@ -417,7 +425,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                   builder: (BuildContext context, BoxConstraints constraints) {
                     final int cardsPerRow = math.min(
                       6,
-                      widget.levelData.playerHandSize,
+                      levelData.playerHandSize,
                     );
                     final double cardWidth =
                         (constraints.maxWidth -
@@ -447,7 +455,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                           canDrag:
                               card != null &&
                               _decoherenceMeterProgress <
-                                  widget.levelData.maxDecoherence,
+                                  levelData.maxDecoherence,
                           width: cardWidth,
                           height: cardHeight,
                           onCardDroppedToHand: _onBoardCardDroppedToHand,

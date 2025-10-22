@@ -1,0 +1,70 @@
+import 'package:coherence_arcana/routes.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../audio/audio_controller.dart';
+import '../audio/sounds.dart';
+// import '../player_progress/player_progress.dart';
+import 'package:coherence_arcana/game_theme.dart';
+import '../style/responsive_screen.dart';
+import 'levels.dart';
+
+class LevelSelectionScreen extends StatelessWidget {
+  const LevelSelectionScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // final playerProgress = context.watch<PlayerProgress>();
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: ResponsiveScreen(
+        squarishMainArea: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(
+                child: Text(
+                  'Select level',
+                  style: TextStyle(fontFamily: 'Press Start 2P', fontSize: 30),
+                ),
+              ),
+            ),
+            const SizedBox(height: 50),
+            Expanded(
+              child: ListView(
+                children: [
+                  for (final level in gameLevels)
+                    ListTile(
+                      // enabled:
+                      //     playerProgress.highestLevelReached >=
+                      //     level.levelNumber - 1,
+                      onTap: () {
+                        final audioController = context.read<AudioController>();
+                        audioController.playSfx(SfxType.buttonClick);
+
+                        // GoRouter.of(
+                        //   context,
+                        // ).go('/play/session/${level.levelNumber}');
+                        Navigator.of(context).pushNamed(
+                          gameRoute,
+                          arguments: gameLevels[level.levelNumber - 1],
+                        );
+                      },
+                      leading: Text(level.levelNumber.toString()),
+                      title: Text('Level #${level.levelNumber}'),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        rectangularMenuArea: IconButton(
+          icon: BackButtonIcon(),
+          onPressed: () {
+            Navigator.of(context).popAndPushNamed(mainMenuRoute);
+          },
+        ),
+      ),
+    );
+  }
+}
