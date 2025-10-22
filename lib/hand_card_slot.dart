@@ -72,8 +72,8 @@ class _HandCardSlotState extends State<HandCardSlot> {
           width: widget.width,
           height: widget.height,
         ),
-        child: cardContent,
         affinity: Axis.horizontal,
+        child: cardContent,
       );
     }
 

@@ -76,9 +76,9 @@ class _BoardCardSlotState extends State<BoardCardSlot> {
           isEmpty: true, // Show empty slot visually when card is dragged.
           width: widget.width,
           height: widget.height,
-        ),
-        child: cardWidget, // The actual card in its original position.
+        ), // The actual card in its original position.
         affinity: Axis.horizontal,
+        child: cardWidget,
       );
     }
 
