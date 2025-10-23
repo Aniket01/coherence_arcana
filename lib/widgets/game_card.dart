@@ -1,5 +1,5 @@
 // A reusable widget for displaying a single game card.
-import 'package:coherence_arcana/card_data.dart';
+import 'package:coherence_arcana/widgets/card_data.dart';
 import 'package:flutter/material.dart';
 
 const Color _emptySlotBackgroundColor = Color(

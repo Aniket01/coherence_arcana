@@ -1,18 +1,18 @@
 import 'package:coherence_arcana/audio/audio_controller.dart';
 import 'package:coherence_arcana/audio/sounds.dart';
-import 'package:coherence_arcana/board_card_slot.dart';
-import 'package:coherence_arcana/game_button.dart';
-import 'package:coherence_arcana/game_card.dart';
-import 'package:coherence_arcana/hand_card_slot.dart';
+import 'package:coherence_arcana/widgets/board_card_slot.dart';
+import 'package:coherence_arcana/widgets/game_button.dart';
+import 'package:coherence_arcana/widgets/game_card.dart';
+import 'package:coherence_arcana/widgets/hand_card_slot.dart';
 import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:coherence_arcana/style/responsive_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'card_data.dart';
+import '../widgets/card_data.dart';
 import 'dart:math' as math;
-import 'game_theme.dart'; // Import the new theme file
-import 'level_data.dart'; // Import the new LevelData class
+import '../widgets/game_theme.dart'; // Import the new theme file
+import '../level_selection/level_data.dart'; // Import the new LevelData class
 
 class CoherenceArcanaGame extends StatefulWidget {
   // The game now requires LevelData to be passed in.

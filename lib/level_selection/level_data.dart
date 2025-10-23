@@ -1,4 +1,4 @@
-import 'card_data.dart';
+import '../widgets/card_data.dart';
 
 // A data class to hold all the configuration for a single level.
 class LevelData {

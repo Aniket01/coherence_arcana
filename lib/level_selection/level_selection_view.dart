@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 // import '../player_progress/player_progress.dart';
-import 'package:coherence_arcana/game_theme.dart';
+import 'package:coherence_arcana/widgets/game_theme.dart';
 import '../style/responsive_screen.dart';
 import 'levels.dart';
 import 'package:google_fonts/google_fonts.dart';

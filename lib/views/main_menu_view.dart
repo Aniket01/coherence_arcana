@@ -1,6 +1,6 @@
 import 'package:coherence_arcana/audio/audio_controller.dart';
 import 'package:coherence_arcana/audio/sounds.dart';
-import 'package:coherence_arcana/game_theme.dart';
+import 'package:coherence_arcana/widgets/game_theme.dart';
 import 'package:coherence_arcana/routes.dart';
 import 'package:coherence_arcana/style/responsive_screen.dart';
 import 'package:flutter/material.dart';

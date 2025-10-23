@@ -1,7 +1,7 @@
 // A widget that represents a slot in the player's hand.
 // It can be a Draggable card or an empty DragTarget.
-import 'package:coherence_arcana/card_data.dart';
-import 'package:coherence_arcana/game_card.dart';
+import 'package:coherence_arcana/widgets/card_data.dart';
+import 'package:coherence_arcana/widgets/game_card.dart';
 import 'package:flutter/material.dart';
 
 const Color _symbolColor = Color(0xFF5C3D6D);

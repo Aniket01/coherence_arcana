@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart'; // For Icons
-import '../card_data.dart';
-import '../game_theme.dart'; // To get card colors
-import '../level_data.dart';
+import '../widgets/card_data.dart';
+import '../widgets/game_theme.dart'; // To get card colors
+import 'level_data.dart';
 
 // This is the Level 4 data, extracted from the original game file.
 final gameLevels = [
