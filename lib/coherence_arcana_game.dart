@@ -5,6 +5,7 @@ import 'package:coherence_arcana/game_button.dart';
 import 'package:coherence_arcana/game_card.dart';
 import 'package:coherence_arcana/hand_card_slot.dart';
 import 'package:coherence_arcana/level_selection/levels.dart';
+import 'package:coherence_arcana/style/responsive_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -259,6 +260,235 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     );
   }
 
+  // Builds the widget for the top message area (Level + Decoherence Meter).
+  Widget _buildTopMessageArea() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            // Use level number from levelData
+            'LEVEL ${levelData.levelNumber}',
+            style: GoogleFonts.getFont('Press Start 2P').copyWith(
+              color: symbolColor, // Use theme color
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        Row(
+          children: <Widget>[
+            Text(
+              'DECOHERENCE METER',
+              style: GoogleFonts.getFont('Press Start 2P').copyWith(
+                color: symbolColor, // Use theme color
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: LinearProgressIndicator(
+                // Use levelData for meter calculation
+                value: _decoherenceMeterProgress / levelData.maxDecoherence,
+                backgroundColor: meterTrackColor, // Use theme color
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  meterFillColor, // Use theme color
+                ),
+                minHeight: 12.0,
+                borderRadius: BorderRadius.circular(6.0),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Builds the widget for the squarish main area (Utility + Board).
+  Widget _buildSquarishMainArea() {
+    // This area scrolls if the content is too tall.
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // --- Utility & Artifacts Section ---
+          _buildSectionTitle('Utility & Artifacts'),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double cardWidth =
+                  (constraints.maxWidth -
+                      (16.0 * 2) -
+                      (8.0 * (levelData.utilitySlotCount - 1))) /
+                  levelData.utilitySlotCount;
+              final double cardHeight =
+                  cardWidth * 1.4; // Aspect ratio for cards.
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  // Use levelData for count
+                  crossAxisCount: levelData.utilitySlotCount,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: cardWidth / cardHeight,
+                ),
+                // Use levelData for count
+                itemCount: levelData.utilitySlotCount,
+                itemBuilder: (BuildContext context, int index) {
+                  return GameCard(
+                    cardData:
+                        _utilitySlots[index] ??
+                        CardData.empty(
+                          cardColor: emptySlotBackgroundColor,
+                          symbolColor: symbolColor,
+                        ),
+                    cardBorderColor: cardBorderColor,
+                    isEmpty: _utilitySlots[index] == null,
+                    width: cardWidth,
+                    height: cardHeight,
+                  );
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 24.0),
+
+          // --- Board Section ---
+          _buildSectionTitle('Board'),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double cardWidth =
+                  (constraints.maxWidth -
+                      (16.0 * 2) -
+                      (8.0 * (levelData.boardCols - 1))) /
+                  levelData.boardCols; // Use levelData
+              final double cardHeight = cardWidth * 1.4;
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: levelData.boardCols, // Use levelData
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: cardWidth / cardHeight,
+                ),
+                itemCount:
+                    levelData.boardRows * levelData.boardCols, // Use levelData
+                itemBuilder: (BuildContext context, int index) {
+                  final int row = index ~/ levelData.boardCols;
+                  final int col = index % levelData.boardCols;
+                  return BoardCardSlot(
+                    row: row,
+                    col: col,
+                    cardData:
+                        _boardCells[row][col] ??
+                        CardData.empty(
+                          cardColor: emptySlotBackgroundColor,
+                          symbolColor: symbolColor,
+                        ),
+                    cardBorderColor: cardBorderColor,
+                    onCardDropped: _onCardDropped,
+                    isEmpty: _boardCells[row][col] == null,
+                    width: cardWidth,
+                    height: cardHeight,
+                    canDrag:
+                        _decoherenceMeterProgress <
+                        levelData.maxDecoherence, // Use levelData
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Builds the widget for the rectangular menu area (Player Hand + Buttons).
+  Widget _buildRectangularMenuArea() {
+    // This area scrolls if the content is too tall.
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // --- Player Hand Section ---
+          _buildSectionTitle('Player Hand'),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final int cardsPerRow = math.min(6, levelData.playerHandSize);
+              final double cardWidth =
+                  (constraints.maxWidth -
+                      (16.0 * 2) -
+                      (8.0 * (cardsPerRow - 1))) /
+                  cardsPerRow;
+              final double cardHeight = cardWidth * 1.4;
+
+              return Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                alignment: WrapAlignment.start,
+                children: _playerHand.asMap().entries.map<Widget>((entry) {
+                  final int index = entry.key;
+                  final CardData? card = entry.value;
+                  return HandCardSlot(
+                    cardData:
+                        card ??
+                        CardData.empty(
+                          cardColor: emptySlotBackgroundColor,
+                          symbolColor: symbolColor,
+                        ),
+                    cardBorderColor: cardBorderColor,
+                    originalHandIndex: index,
+                    canDrag:
+                        card != null &&
+                        _decoherenceMeterProgress < levelData.maxDecoherence,
+                    width: cardWidth,
+                    height: cardHeight,
+                    onCardDroppedToHand: _onBoardCardDroppedToHand,
+                  );
+                }).toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 24.0),
+
+          // --- Action Buttons Section ---
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(
+                child: GameButton(
+                  text: 'DISCARD',
+                  onPressed: () => _onButtonPressed('Discard'),
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: GameButton(
+                  text: 'MEASURE',
+                  onPressed: () => _onButtonPressed('Measure'),
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: GameButton(
+                  text: 'RESET',
+                  onPressed: () => _onButtonPressed('Reset'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16.0),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -280,247 +510,11 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
           icon: const Icon(Icons.arrow_back, color: symbolColor),
         ),
       ),
-      // Use theme color
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Column(
-            children: <Widget>[
-              // --- Level and Decoherence Meter Section ---
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        // Use level number from levelData
-                        'LEVEL ${levelData.levelNumber}',
-                        style: GoogleFonts.getFont('Press Start 2P').copyWith(
-                          color: symbolColor, // Use theme color
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          'DECOHERENCE METER',
-                          style: GoogleFonts.getFont('Press Start 2P').copyWith(
-                            color: symbolColor, // Use theme color
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Expanded(
-                          child: LinearProgressIndicator(
-                            // Use levelData for meter calculation
-                            value:
-                                _decoherenceMeterProgress /
-                                levelData.maxDecoherence,
-                            backgroundColor: meterTrackColor, // Use theme color
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              meterFillColor, // Use theme color
-                            ),
-                            minHeight: 12.0,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-
-              // --- Utility & Artifacts Section ---
-              _buildSectionTitle('Utility & Artifacts'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final double cardWidth =
-                        (constraints.maxWidth -
-                            (16.0 * 2) -
-                            (8.0 * (levelData.utilitySlotCount - 1))) /
-                        levelData.utilitySlotCount;
-                    final double cardHeight =
-                        cardWidth * 1.4; // Aspect ratio for cards.
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        // Use levelData for count
-                        crossAxisCount: levelData.utilitySlotCount,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: cardWidth / cardHeight,
-                      ),
-                      // Use levelData for count
-                      itemCount: levelData.utilitySlotCount,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GameCard(
-                          cardData:
-                              _utilitySlots[index] ??
-                              CardData.empty(
-                                cardColor: emptySlotBackgroundColor,
-                                symbolColor: symbolColor,
-                              ),
-                          cardBorderColor: cardBorderColor,
-                          isEmpty: _utilitySlots[index] == null,
-                          width: cardWidth,
-                          height: cardHeight,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24.0),
-
-              // --- Board Section ---
-              _buildSectionTitle('Board'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final double cardWidth =
-                        (constraints.maxWidth -
-                            (16.0 * 2) -
-                            (8.0 * (levelData.boardCols - 1))) /
-                        levelData.boardCols; // Use levelData
-                    final double cardHeight = cardWidth * 1.4;
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: levelData.boardCols, // Use levelData
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: cardWidth / cardHeight,
-                      ),
-                      itemCount:
-                          levelData.boardRows *
-                          levelData.boardCols, // Use levelData
-                      itemBuilder: (BuildContext context, int index) {
-                        final int row = index ~/ levelData.boardCols;
-                        final int col = index % levelData.boardCols;
-                        return BoardCardSlot(
-                          row: row,
-                          col: col,
-                          cardData:
-                              _boardCells[row][col] ??
-                              CardData.empty(
-                                cardColor: emptySlotBackgroundColor,
-                                symbolColor: symbolColor,
-                              ),
-                          cardBorderColor: cardBorderColor,
-                          onCardDropped: _onCardDropped,
-                          isEmpty: _boardCells[row][col] == null,
-                          width: cardWidth,
-                          height: cardHeight,
-                          canDrag:
-                              _decoherenceMeterProgress <
-                              levelData.maxDecoherence, // Use levelData
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24.0),
-
-              // --- Player Hand Section ---
-              _buildSectionTitle('Player Hand'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final int cardsPerRow = math.min(
-                      6,
-                      levelData.playerHandSize,
-                    );
-                    final double cardWidth =
-                        (constraints.maxWidth -
-                            (16.0 * 2) -
-                            (8.0 * (cardsPerRow - 1))) /
-                        cardsPerRow;
-                    final double cardHeight = cardWidth * 1.4;
-
-                    return Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.start,
-                      children: _playerHand.asMap().entries.map<Widget>((
-                        entry,
-                      ) {
-                        final int index = entry.key;
-                        final CardData? card = entry.value;
-                        return HandCardSlot(
-                          cardData:
-                              card ??
-                              CardData.empty(
-                                cardColor: emptySlotBackgroundColor,
-                                symbolColor: symbolColor,
-                              ),
-                          cardBorderColor: cardBorderColor,
-                          originalHandIndex: index,
-                          canDrag:
-                              card != null &&
-                              _decoherenceMeterProgress <
-                                  levelData.maxDecoherence,
-                          width: cardWidth,
-                          height: cardHeight,
-                          onCardDroppedToHand: _onBoardCardDroppedToHand,
-                        );
-                      }).toList(),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24.0),
-
-              // --- Action Buttons Section ---
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(
-                      child: GameButton(
-                        text: 'DISCARD',
-                        onPressed: () => _onButtonPressed('Discard'),
-                      ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      child: GameButton(
-                        text: 'MEASURE',
-                        onPressed: () => _onButtonPressed('Measure'),
-                      ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      child: GameButton(
-                        text: 'RESET',
-                        onPressed: () => _onButtonPressed('Reset'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-            ],
-          ),
-        ),
+      // Use the ResponsiveScreen as the new body
+      body: ResponsiveScreen(
+        topMessageArea: _buildTopMessageArea(),
+        squarishMainArea: _buildSquarishMainArea(),
+        rectangularMenuArea: _buildRectangularMenuArea(),
       ),
     );
   }
