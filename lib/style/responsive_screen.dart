@@ -50,10 +50,7 @@ class ResponsiveScreen extends StatelessWidget {
               SafeArea(
                 top: false,
                 maintainBottomViewPadding: true,
-                child: Padding(
-                  padding: padding,
-                  child: Center(child: rectangularMenuArea),
-                ),
+                child: rectangularMenuArea,
               ),
             ],
           );
