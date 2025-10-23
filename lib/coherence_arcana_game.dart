@@ -262,7 +262,25 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor, // Use theme color
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            final audioController = Provider.of<AudioController>(
+              context,
+              listen: false,
+            );
+            setState(() {
+              audioController.playSfx(SfxType.buttonClick);
+            });
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back, color: symbolColor),
+        ),
+      ),
+      // Use theme color
       body: SafeArea(
         child: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),

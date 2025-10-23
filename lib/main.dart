@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      home: LevelSelectionScreen(),
+      home: MainMenuView(),
       routes: {
         levelSelectionRoute: (context) => const LevelSelectionScreen(),
         mainMenuRoute: (context) => const MainMenuView(),

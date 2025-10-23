@@ -7,6 +7,7 @@ import '../audio/sounds.dart';
 import 'package:coherence_arcana/game_theme.dart';
 import '../style/responsive_screen.dart';
 import 'levels.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LevelSelectionScreen extends StatelessWidget {
   const LevelSelectionScreen({super.key});
@@ -20,12 +21,15 @@ class LevelSelectionScreen extends StatelessWidget {
       body: ResponsiveScreen(
         squarishMainArea: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
+            Padding(
+              padding: const EdgeInsets.all(16),
               child: Center(
                 child: Text(
                   'Select level',
-                  style: TextStyle(fontFamily: 'Press Start 2P', fontSize: 30),
+                  style: GoogleFonts.pressStart2p().copyWith(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -39,7 +43,10 @@ class LevelSelectionScreen extends StatelessWidget {
                       //     playerProgress.highestLevelReached >=
                       //     level.levelNumber - 1,
                       onTap: () {
-                        final audioController = context.read<AudioController>();
+                        final audioController = Provider.of<AudioController>(
+                          context,
+                          listen: false,
+                        );
                         audioController.playSfx(SfxType.buttonClick);
 
                         // GoRouter.of(
@@ -61,6 +68,11 @@ class LevelSelectionScreen extends StatelessWidget {
         rectangularMenuArea: IconButton(
           icon: BackButtonIcon(),
           onPressed: () {
+            final audioController = Provider.of<AudioController>(
+              context,
+              listen: false,
+            );
+            audioController.playSfx(SfxType.cardNotPlaced);
             Navigator.of(context).popAndPushNamed(mainMenuRoute);
           },
         ),
