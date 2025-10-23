@@ -245,7 +245,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   // Helper widget to build consistent section titles.
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.only(top: 2.0, left: 8.0, right: 8.0),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -254,6 +254,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
             color: symbolColor, // Use theme color
             fontSize: 14,
             fontWeight: FontWeight.bold,
+            height: 0,
           ),
         ),
       ),
@@ -314,49 +315,6 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // --- Utility & Artifacts Section ---
-          _buildSectionTitle('Utility & Artifacts'),
-          LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final double cardWidth =
-                  (constraints.maxWidth -
-                      (16.0 * 2) -
-                      (8.0 * (levelData.utilitySlotCount - 1))) /
-                  levelData.utilitySlotCount;
-              final double cardHeight =
-                  cardWidth * 1.4; // Aspect ratio for cards.
-
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // Use levelData for count
-                  crossAxisCount: levelData.utilitySlotCount,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: cardWidth / cardHeight,
-                ),
-                // Use levelData for count
-                itemCount: levelData.utilitySlotCount,
-                itemBuilder: (BuildContext context, int index) {
-                  return GameCard(
-                    cardData:
-                        _utilitySlots[index] ??
-                        CardData.empty(
-                          cardColor: emptySlotBackgroundColor,
-                          symbolColor: symbolColor,
-                        ),
-                    cardBorderColor: cardBorderColor,
-                    isEmpty: _utilitySlots[index] == null,
-                    width: cardWidth,
-                    height: cardHeight,
-                  );
-                },
-              );
-            },
-          ),
-          const SizedBox(height: 24.0),
-
           // --- Board Section ---
           _buildSectionTitle('Board'),
           LayoutBuilder(
@@ -416,6 +374,50 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // --- Utility & Artifacts Section ---
+          _buildSectionTitle('Utility & Artifacts'),
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double cardWidth =
+                  (constraints.maxWidth -
+                      (16.0 * 2) -
+                      (8.0 * (levelData.utilitySlotCount - 1))) /
+                  levelData.utilitySlotCount;
+              final double cardHeight =
+                  cardWidth * 1.4; // Aspect ratio for cards.
+
+              return GridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  // Use levelData for count
+                  crossAxisCount: levelData.utilitySlotCount,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: cardWidth / cardHeight,
+                ),
+                // Use levelData for count
+                itemCount: levelData.utilitySlotCount,
+                itemBuilder: (BuildContext context, int index) {
+                  return GameCard(
+                    cardData:
+                        _utilitySlots[index] ??
+                        CardData.empty(
+                          cardColor: emptySlotBackgroundColor,
+                          symbolColor: symbolColor,
+                        ),
+                    cardBorderColor: cardBorderColor,
+                    isEmpty: _utilitySlots[index] == null,
+                    width: cardWidth,
+                    height: cardHeight,
+                  );
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 12.0),
+
           // --- Player Hand Section ---
           _buildSectionTitle('Player Hand'),
           LayoutBuilder(
@@ -493,23 +495,23 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            final audioController = Provider.of<AudioController>(
-              context,
-              listen: false,
-            );
-            setState(() {
-              audioController.playSfx(SfxType.buttonClick);
-            });
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(Icons.arrow_back, color: symbolColor),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     onPressed: () {
+      //       final audioController = Provider.of<AudioController>(
+      //         context,
+      //         listen: false,
+      //       );
+      //       setState(() {
+      //         audioController.playSfx(SfxType.buttonClick);
+      //       });
+      //       Navigator.of(context).pop();
+      //     },
+      //     icon: const Icon(Icons.arrow_back, color: symbolColor),
+      //   ),
+      // ),
       // Use the ResponsiveScreen as the new body
       body: ResponsiveScreen(
         topMessageArea: _buildTopMessageArea(),
