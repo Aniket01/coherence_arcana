@@ -52,10 +52,9 @@ class LevelSelectionScreen extends StatelessWidget {
                         // GoRouter.of(
                         //   context,
                         // ).go('/play/session/${level.levelNumber}');
-                        Navigator.of(context).pushNamed(
-                          gameRoute,
-                          arguments: gameLevels[level.levelNumber - 1],
-                        );
+                        Navigator.of(
+                          context,
+                        ).pushNamed('/game${level.levelNumber}/');
                       },
                       leading: Text(level.levelNumber.toString()),
                       title: Text('Level #${level.levelNumber}'),

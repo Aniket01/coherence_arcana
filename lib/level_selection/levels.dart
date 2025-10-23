@@ -5,12 +5,353 @@ import '../level_data.dart';
 
 // This is the Level 4 data, extracted from the original game file.
 final gameLevels = [
-  // LevelData(levelNumber: null, boardRows: null, boardCols: null, playerHandSize: null, utilitySlotCount: null, maxDecoherence: null, decoherencePerAction: null, initialUtilitySlots: [], initialBoardCells: [], initialPlayerHand: []),
-  // LevelData(levelNumber: levelNumber, boardRows: boardRows, boardCols: boardCols, playerHandSize: playerHandSize, utilitySlotCount: utilitySlotCount, maxDecoherence: maxDecoherence, decoherencePerAction: decoherencePerAction, initialUtilitySlots: initialUtilitySlots, initialBoardCells: initialBoardCells, initialPlayerHand: initialPlayerHand),
-  // LevelData(levelNumber: levelNumber, boardRows: boardRows, boardCols: boardCols, playerHandSize: playerHandSize, utilitySlotCount: utilitySlotCount, maxDecoherence: maxDecoherence, decoherencePerAction: decoherencePerAction, initialUtilitySlots: initialUtilitySlots, initialBoardCells: initialBoardCells, initialPlayerHand: initialPlayerHand),
+  LevelData(
+    levelNumber: 1,
+    boardRows: 1,
+    boardCols: 6,
+    playerHandSize: 8,
+    utilitySlotCount: 4,
+    maxDecoherence: 10,
+    decoherencePerAction: 2.0,
+    initialUtilitySlots: <CardData?>[
+      CardData(
+        id: 'Stabilizer',
+        symbol: 'Artifact',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      ),
+      null,
+      null,
+      null,
+    ],
+    initialBoardCells: () {
+      var board = List<List<CardData?>>.generate(
+        1, // boardRows
+        (int row) => List<CardData?>.filled(6, null), //boardCols
+      );
+      board[0][0] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][1] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][2] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][3] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][4] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][5] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      return board;
+    }(),
+    initialPlayerHand: () {
+      var hand = <CardData?>[
+        CardData(
+          id: 'Qubit 1',
+          symbol: '|1⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Qubit 0',
+          symbol: '|0⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Phase gate',
+          symbol: 'P',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'CNOT gate',
+          symbol: 'CNOT',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Decohering qubit',
+          symbol: 'DECOHERED',
+          cornerIconTopLeft: Icons.blur_on,
+          cornerIconBottomRight: Icons.scatter_plot,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+      ];
+      // Pad the hand with nulls up to the playerHandSize
+      while (hand.length < 12) {
+        // playerHandSize
+        hand.add(null);
+      }
+      return hand;
+    }(),
+  ),
+  LevelData(
+    levelNumber: 2,
+    boardRows: 2,
+    boardCols: 6,
+    playerHandSize: 8,
+    utilitySlotCount: 4,
+    maxDecoherence: 20,
+    decoherencePerAction: 2.0,
+    initialUtilitySlots: <CardData?>[
+      CardData(
+        id: 'Coherent qubit',
+        symbol: 'Artifact',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      ),
+      null,
+      null,
+      null,
+    ],
+    initialBoardCells: () {
+      var board = List<List<CardData?>>.generate(
+        2, // boardRows
+        (int row) => List<CardData?>.filled(6, null), //boardCols
+      );
+      board[0][0] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][1] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][2] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][3] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][4] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][5] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      return board;
+    }(),
+    initialPlayerHand: () {
+      var hand = <CardData?>[
+        CardData(
+          id: 'Qubit 1',
+          symbol: '|1⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Qubit 0',
+          symbol: '|0⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Phase gate',
+          symbol: 'P',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'CNOT gate',
+          symbol: 'CNOT',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Decohering qubit',
+          symbol: 'DECOHERED',
+          cornerIconTopLeft: Icons.blur_on,
+          cornerIconBottomRight: Icons.scatter_plot,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+      ];
+      // Pad the hand with nulls up to the playerHandSize
+      while (hand.length < 12) {
+        // playerHandSize
+        hand.add(null);
+      }
+      return hand;
+    }(),
+  ),
+  LevelData(
+    levelNumber: 3,
+    boardRows: 2,
+    boardCols: 6,
+    playerHandSize: 12,
+    utilitySlotCount: 4,
+    maxDecoherence: 24,
+    decoherencePerAction: 2.0,
+    initialUtilitySlots: <CardData?>[
+      CardData(
+        id: 'Stabilizer',
+        symbol: 'Artifact',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      ),
+      CardData(
+        id: 'Quantum Compass',
+        symbol: 'Artifact',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      ),
+      null,
+      null,
+    ],
+    initialBoardCells: () {
+      var board = List<List<CardData?>>.generate(
+        2, // boardRows
+        (int row) => List<CardData?>.filled(6, null), //boardCols
+      );
+      board[0][0] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][1] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][2] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][3] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][4] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      board[0][5] = CardData(
+        id: 'Qubit psi',
+        symbol: '|ψ⟩',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      );
+      return board;
+    }(),
+    initialPlayerHand: () {
+      var hand = <CardData?>[
+        CardData(
+          id: 'Qubit 1',
+          symbol: '|1⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Qubit 0',
+          symbol: '|0⟩',
+          cornerIconTopLeft: Icons.schedule,
+          cornerIconBottomRight: Icons.schedule,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Phase gate',
+          symbol: 'P',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'CNOT gate',
+          symbol: 'CNOT',
+          cornerIconTopLeft: Icons.settings_input_component,
+          cornerIconBottomRight: Icons.settings_input_component,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+        CardData(
+          id: 'Decohering qubit',
+          symbol: 'DECOHERED',
+          cornerIconTopLeft: Icons.blur_on,
+          cornerIconBottomRight: Icons.scatter_plot,
+          cardColor: cardColor,
+          symbolColor: symbolColor,
+        ),
+      ];
+      // Pad the hand with nulls up to the playerHandSize
+      while (hand.length < 12) {
+        // playerHandSize
+        hand.add(null);
+      }
+      return hand;
+    }(),
+  ),
   LevelData(
     // Level 4 properties
-    levelNumber: 1,
+    levelNumber: 4,
     boardRows: 3,
     boardCols: 6,
     playerHandSize: 12,
@@ -29,14 +370,19 @@ final gameLevels = [
         symbolColor: symbolColor, // From game_theme.dart
       ),
       CardData(
-        id: 'Cryogenic Core',
-        symbol: 'POTION',
+        id: 'Quantum Compass',
+        symbol: 'Artifact',
         cornerIconTopLeft: Icons.lightbulb_outline,
         cornerIconBottomRight: Icons.bolt,
         cardColor: cardColor,
         symbolColor: symbolColor,
       ),
-      null, // Empty slot
+      CardData(
+        id: 'Coherent qubit',
+        symbol: 'Artifact',
+        cardColor: cardColor,
+        symbolColor: symbolColor,
+      ), // Empty slot
       null, // Empty slot
     ],
 

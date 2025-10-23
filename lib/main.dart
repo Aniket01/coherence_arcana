@@ -1,5 +1,6 @@
 import 'package:coherence_arcana/coherence_arcana_game.dart';
 import 'package:coherence_arcana/level_selection/level_selection_view.dart';
+import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:coherence_arcana/main_menu_view.dart';
 import 'package:coherence_arcana/routes.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,10 @@ class MyApp extends StatelessWidget {
       routes: {
         levelSelectionRoute: (context) => const LevelSelectionScreen(),
         mainMenuRoute: (context) => const MainMenuView(),
-        gameRoute: (context) => const CoherenceArcanaGame(),
+        gamelvl1: (context) => CoherenceArcanaGame(levelData: gameLevels[0]),
+        gamelvl2: (context) => CoherenceArcanaGame(levelData: gameLevels[1]),
+        gamelvl3: (context) => CoherenceArcanaGame(levelData: gameLevels[2]),
+        gamelvl4: (context) => CoherenceArcanaGame(levelData: gameLevels[3]),
       },
     );
   }
