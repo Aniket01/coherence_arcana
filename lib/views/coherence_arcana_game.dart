@@ -1,5 +1,7 @@
 import 'package:coherence_arcana/audio/audio_controller.dart';
 import 'package:coherence_arcana/audio/sounds.dart';
+import 'package:coherence_arcana/game_internals/score.dart';
+import 'package:coherence_arcana/views/post_game_view.dart';
 import 'package:coherence_arcana/widgets/board_card_slot.dart';
 import 'package:coherence_arcana/widgets/game_button.dart';
 import 'package:coherence_arcana/widgets/game_card.dart';
@@ -32,6 +34,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   late List<CardData?> _utilitySlots;
   late List<List<CardData?>> _boardCells;
   late List<CardData?> _playerHand;
+  late int _artifactTaps;
 
   @override
   void initState() {
@@ -63,6 +66,7 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
         .map((row) => List<CardData?>.from(row))
         .toList();
     _playerHand = List<CardData?>.from(levelData.initialPlayerHand);
+    _artifactTaps = 0;
   }
 
   // Handles a card being dropped onto the board.
@@ -235,6 +239,18 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       setState(() {
         audioController.playSfx(SfxType.buttonClick);
       });
+      final gameScore = Score(level: levelData.levelNumber);
+      gameScore.calculate(
+        _boardCells,
+        _decoherenceMeterProgress,
+        _artifactTaps,
+      ); // update gameScore object properties
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PostGameView(scoreData: gameScore),
+        ),
+      );
       // TODO: Add logic for system submission and score calculation
     } else if (action == 'Discard') {
       audioController.playSfx(SfxType.buttonClick);

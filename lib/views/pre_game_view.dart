@@ -12,7 +12,7 @@ class PreGameView extends StatefulWidget {
 
 class _PreGameViewState extends State<PreGameView> {
   // The initial countdown duration in seconds.
-  int _countdownSeconds = 20;
+  int _countdownSeconds = 10;
   // Timer object to handle the periodic countdown.
   Timer? _timer;
   late final int _selectedLevelIndex;

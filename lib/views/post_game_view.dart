@@ -1,5 +1,6 @@
 import 'package:coherence_arcana/game_internals/score.dart';
 import 'package:coherence_arcana/routes.dart';
+import 'package:coherence_arcana/views/pre_game_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
@@ -8,7 +9,7 @@ import 'package:coherence_arcana/widgets/game_theme.dart';
 import '../style/responsive_screen.dart';
 
 class PostGameView extends StatelessWidget {
-  const PostGameView({super.key, required this.scoreData, this.maxStars = 5});
+  const PostGameView({super.key, required this.scoreData, this.maxStars = 3});
   final int maxStars;
   final Score scoreData;
 
@@ -74,9 +75,12 @@ class PostGameView extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonClick);
-                Navigator.of(
+                Navigator.push(
                   context,
-                ).pushNamedAndRemoveUntil('/game$nextLvl/', (route) => false);
+                  MaterialPageRoute(
+                    builder: (context) => PreGameView(level: nextLvl - 1),
+                  ),
+                );
               },
               child: Text('Next Level'),
             ),
