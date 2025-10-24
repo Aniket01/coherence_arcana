@@ -1,5 +1,5 @@
 import 'package:coherence_arcana/views/coherence_arcana_game.dart';
-import 'package:coherence_arcana/level_selection/level_selection_view.dart';
+import 'package:coherence_arcana/views/level_selection_view.dart';
 import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:coherence_arcana/views/main_menu_view.dart';
 import 'package:coherence_arcana/routes.dart';

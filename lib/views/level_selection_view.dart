@@ -1,4 +1,5 @@
 import 'package:coherence_arcana/routes.dart';
+import 'package:coherence_arcana/views/pre_game_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
@@ -6,7 +7,7 @@ import '../audio/sounds.dart';
 // import '../player_progress/player_progress.dart';
 import 'package:coherence_arcana/widgets/game_theme.dart';
 import '../style/responsive_screen.dart';
-import 'levels.dart';
+import '../level_selection/levels.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LevelSelectionScreen extends StatelessWidget {
@@ -52,9 +53,14 @@ class LevelSelectionScreen extends StatelessWidget {
                         // GoRouter.of(
                         //   context,
                         // ).go('/play/session/${level.levelNumber}');
-                        Navigator.of(
+                        Navigator.push(
                           context,
-                        ).pushNamed('/game${level.levelNumber}/');
+                          MaterialPageRoute(
+                            builder: (context) => PreGameView(
+                              level: level.levelNumber - 1,
+                            ), // levelNumber = level index - 1
+                          ),
+                        );
                       },
                       leading: Text(level.levelNumber.toString()),
                       title: Text('Level #${level.levelNumber}'),
