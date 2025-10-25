@@ -1,5 +1,6 @@
 import 'package:coherence_arcana/audio/audio_controller.dart';
 import 'package:coherence_arcana/audio/sounds.dart';
+import 'package:coherence_arcana/game_internals/answer.dart';
 import 'package:coherence_arcana/game_internals/score.dart';
 import 'package:coherence_arcana/views/post_game_view.dart';
 import 'package:coherence_arcana/widgets/board_card_slot.dart';
@@ -190,33 +191,6 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     });
   }
 
-  // ignore: unused_element
-  void _onCardDroppedToUtil() {
-    // TODO: Implement logic
-    final audioController = Provider.of<AudioController>(
-      context,
-      listen: false,
-    );
-    setState(() {
-      final bool wasMeterFull =
-          _decoherenceMeterProgress >= levelData.maxDecoherence;
-
-      // Increase the decoherence meter.
-      _decoherenceMeterProgress =
-          (_decoherenceMeterProgress + levelData.decoherencePerAction).clamp(
-            0.0,
-            levelData.maxDecoherence,
-          );
-
-      audioController.playSfx(SfxType.utilPlaced);
-
-      if (!wasMeterFull &&
-          _decoherenceMeterProgress >= levelData.maxDecoherence) {
-        audioController.playSfx(SfxType.meterFull);
-      }
-    });
-  }
-
   // Handles button presses (Discard, Measure, Reset).
   void _onButtonPressed(String action) {
     final audioController = Provider.of<AudioController>(
@@ -227,13 +201,13 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
     // Play a sound for any button press
     audioController.playSfx(SfxType.buttonClick);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('$action button pressed!')));
     if (action == 'Reset') {
       setState(() {
         audioController.playSfx(SfxType.buttonClick);
-        _initializeGameState(); // Re-initialize all card positions from levelData.
+        _initializeGameState();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Board reset!')),
+        ); // Re-initialize all card positions from levelData.
       });
     } else if (action == 'Measure') {
       setState(() {
@@ -251,11 +225,124 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
           builder: (context) => PostGameView(scoreData: gameScore),
         ),
       );
-      // TODO: Add logic for system submission and score calculation
     } else if (action == 'Discard') {
-      audioController.playSfx(SfxType.buttonClick);
-      // TODO: Add logic for discarding cards from player hand
+      setState(() {
+        audioController.playSfx(SfxType.buttonClick);
+        // Find the last non-null card and remove it
+        for (int i = _playerHand.length - 1; i >= 0; i--) {
+          if (_playerHand[i] != null) {
+            _playerHand[i] = null;
+            break;
+          }
+        }
+      });
     }
+  }
+
+  void _onTapArtifact(String cardId, int utilitySlotIndex) {
+    final audioController = Provider.of<AudioController>(
+      context,
+      listen: false,
+    );
+
+    // Check if meter is full
+    if (_decoherenceMeterProgress >= levelData.maxDecoherence) {
+      audioController.playSfx(SfxType.cardNotPlaced);
+      return;
+    }
+
+    // Get the correct answer board
+    // levelNumber is 1-based, levelAnswers is 0-indexed
+    if (levelData.levelNumber > levelAnswers.length) {
+      // Safety check in case answer doesn't exist
+      debugPrint("Error: No answer found for level ${levelData.levelNumber}");
+      return;
+    }
+    final answerBoard = levelAnswers[levelData.levelNumber - 1];
+
+    bool actionTaken = false;
+    debugPrint("Tapped on card: $cardId");
+    setState(() {
+      if (cardId == 'Noise Filter') {
+        // --- Noise Filter Logic ---
+        // Get all card IDs from the answer board
+        final answerCardIds = <String>{};
+        for (final row in answerBoard) {
+          for (final card in row) {
+            if (card != null) {
+              answerCardIds.add(card.id);
+            }
+          }
+        }
+
+        // Find the first card in hand that is NOT in the answer set
+        for (int i = 0; i < _playerHand.length; i++) {
+          final handCard = _playerHand[i];
+          if (handCard != null && !answerCardIds.contains(handCard.id)) {
+            _playerHand[i] = null; // Remove the card
+            actionTaken = true;
+            break; // Only remove one
+          }
+        }
+      } else if (cardId == 'Stabilizer') {
+        // --- Stabilizer Logic ---
+        int? foundRow;
+        int? foundCol;
+        CardData? cardToMove;
+
+        // Find the first wrongly placed card
+        for (int r = 0; r < _boardCells.length; r++) {
+          for (int c = 0; c < _boardCells[r].length; c++) {
+            final placedCard = _boardCells[r][c];
+            final correctCard =
+                (r < answerBoard.length && c < answerBoard[r].length)
+                ? answerBoard[r][c]
+                : null;
+
+            if (placedCard != null &&
+                (correctCard == null || placedCard.id != correctCard.id)) {
+              // This card is wrongly placed
+              cardToMove = placedCard;
+              foundRow = r;
+              foundCol = c;
+              break;
+            }
+          }
+          if (cardToMove != null) break;
+        }
+
+        // If a wrong card was found, try to move it to hand
+        if (cardToMove != null && foundRow != null && foundCol != null) {
+          final int emptyHandSlot = _playerHand.indexOf(null);
+          if (emptyHandSlot != -1) {
+            _playerHand[emptyHandSlot] = cardToMove;
+            _boardCells[foundRow][foundCol] = null; // Remove from board
+            actionTaken = true;
+          }
+          // else: No space in hand, action fails (actionTaken remains false)
+        }
+      } else if (cardId == 'Coherent qubit') {
+        // --- Coherent Qubit Logic ---
+        _decoherenceMeterProgress -= (levelData.maxDecoherence * 0.20);
+        _decoherenceMeterProgress = _decoherenceMeterProgress.clamp(
+          0.0,
+          levelData.maxDecoherence,
+        );
+        actionTaken = true;
+      }
+
+      // If action was successful, consume the artifact and update meter/taps
+      if (actionTaken) {
+        _utilitySlots[utilitySlotIndex] = null; // Consume the artifact card
+        _artifactTaps++; // Increment tap counter
+        audioController.playSfx(
+          SfxType.utilPlaced,
+        ); // Or a new "artifactUsed" sound
+        // This action does NOT increase the decoherence meter.
+      } else {
+        audioController.playSfx(SfxType.cardNotPlaced);
+      }
+    });
   }
 
   // Helper widget to build consistent section titles.
@@ -416,17 +503,30 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
                 // Use levelData for count
                 itemCount: levelData.utilitySlotCount,
                 itemBuilder: (BuildContext context, int index) {
-                  return GameCard(
-                    cardData:
-                        _utilitySlots[index] ??
-                        CardData.empty(
-                          cardColor: emptySlotBackgroundColor,
-                          symbolColor: symbolColor,
-                        ),
-                    cardBorderColor: cardBorderColor,
-                    isEmpty: _utilitySlots[index] == null,
-                    width: cardWidth,
-                    height: cardHeight,
+                  final CardData? card = _utilitySlots[index];
+                  // Check if the card is a known artifact by its ID
+                  final bool isArtifact =
+                      card != null &&
+                      (card.id == 'Noise Filter' ||
+                          card.id == 'Stabilizer' ||
+                          card.id == 'Coherent qubit');
+
+                  return GestureDetector(
+                    onTap: isArtifact
+                        ? () => _onTapArtifact(card.id, index)
+                        : null, // Only tappable if it's a known artifact
+                    child: GameCard(
+                      cardData:
+                          card ??
+                          CardData.empty(
+                            cardColor: emptySlotBackgroundColor,
+                            symbolColor: symbolColor,
+                          ),
+                      cardBorderColor: cardBorderColor,
+                      isEmpty: card == null,
+                      width: cardWidth,
+                      height: cardHeight,
+                    ),
                   );
                 },
               );
@@ -511,23 +611,6 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     onPressed: () {
-      //       final audioController = Provider.of<AudioController>(
-      //         context,
-      //         listen: false,
-      //       );
-      //       setState(() {
-      //         audioController.playSfx(SfxType.buttonClick);
-      //       });
-      //       Navigator.of(context).pop();
-      //     },
-      //     icon: const Icon(Icons.arrow_back, color: symbolColor),
-      //   ),
-      // ),
       // Use the ResponsiveScreen as the new body
       body: ResponsiveScreen(
         topMessageArea: _buildTopMessageArea(),

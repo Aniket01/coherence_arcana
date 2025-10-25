@@ -12,7 +12,7 @@ class PreGameView extends StatefulWidget {
 
 class _PreGameViewState extends State<PreGameView> {
   // The initial countdown duration in seconds.
-  int _countdownSeconds = 10;
+  int _countdownSeconds = 5;
   // Timer object to handle the periodic countdown.
   Timer? _timer;
   late final int _selectedLevelIndex;
@@ -64,17 +64,14 @@ class _PreGameViewState extends State<PreGameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pre-Game Countdown'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Memorize'), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'Game starting in...',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.normal),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
             ),
             const SizedBox(height: 20),
             // Display the current countdown seconds prominently.

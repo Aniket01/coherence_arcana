@@ -194,4 +194,4 @@ final levelAnswers = [
   }(),
 ];
 
-final levelMoves = [0, 10, 10, 10]; // Min number of moves to get full score
+final levelMoves = [0, 5, 5, 5]; // Min number of moves to get full score
