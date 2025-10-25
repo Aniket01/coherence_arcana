@@ -102,8 +102,8 @@ final gameLevels = [
           symbolColor: symbolColor,
         ),
         CardData(
-          id: 'Decohering qubit',
-          symbol: 'DECOHERED',
+          id: 'Phase gate',
+          symbol: 'P',
           cornerIconTopLeft: Icons.blur_on,
           cornerIconBottomRight: Icons.scatter_plot,
           cardColor: cardColor,
@@ -215,8 +215,8 @@ final gameLevels = [
           symbolColor: symbolColor,
         ),
         CardData(
-          id: 'Decohering qubit',
-          symbol: 'DECOHERED',
+          id: 'Phase gate',
+          symbol: 'P',
           cornerIconTopLeft: Icons.blur_on,
           cornerIconBottomRight: Icons.scatter_plot,
           cardColor: cardColor,
@@ -333,8 +333,8 @@ final gameLevels = [
           symbolColor: symbolColor,
         ),
         CardData(
-          id: 'Decohering qubit',
-          symbol: 'DECOHERED',
+          id: 'Phase gate',
+          symbol: 'P',
           cornerIconTopLeft: Icons.blur_on,
           cornerIconBottomRight: Icons.scatter_plot,
           cardColor: cardColor,
@@ -505,8 +505,8 @@ final gameLevels = [
           symbolColor: symbolColor,
         ),
         CardData(
-          id: 'Decohering qubit',
-          symbol: 'DECOHERED',
+          id: 'Phase gate',
+          symbol: 'P',
           cornerIconTopLeft: Icons.blur_on,
           cornerIconBottomRight: Icons.scatter_plot,
           cardColor: cardColor,

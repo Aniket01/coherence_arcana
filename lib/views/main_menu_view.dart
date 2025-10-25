@@ -20,15 +20,39 @@ class MainMenuView extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: ResponsiveScreen(
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: Text(
-              'Coherence Arcana',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.pressStart2p(fontSize: 44, height: 1),
+        squarishMainArea: Stack(
+          children: [
+            Center(
+              child: Opacity(
+                opacity: 0.3,
+                child: Image.asset(
+                  'assets/icon/icon.png',
+                  height: 500,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.image_not_supported,
+                      size: 600,
+                      color: Colors.grey,
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+            Center(
+              child: Transform.rotate(
+                angle: -0.1,
+                child: Text(
+                  'Coherence Arcana',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.pressStart2p(
+                    fontSize: 44,
+                    fontWeight: FontWeight.bold,
+                    height: 1,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         rectangularMenuArea: Column(
           mainAxisAlignment: MainAxisAlignment.end,
