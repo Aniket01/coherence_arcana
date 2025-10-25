@@ -69,16 +69,22 @@ class LevelSelectionScreen extends StatelessWidget {
             ),
           ],
         ),
-        rectangularMenuArea: IconButton(
-          icon: BackButtonIcon(),
-          onPressed: () {
-            final audioController = Provider.of<AudioController>(
-              context,
-              listen: false,
-            );
-            audioController.playSfx(SfxType.cardNotPlaced);
-            Navigator.of(context).popAndPushNamed(mainMenuRoute);
-          },
+        rectangularMenuArea: Column(
+          children: [
+            IconButton(
+              icon: BackButtonIcon(),
+              iconSize: 40,
+              onPressed: () {
+                final audioController = Provider.of<AudioController>(
+                  context,
+                  listen: false,
+                );
+                audioController.playSfx(SfxType.cardNotPlaced);
+                Navigator.of(context).popAndPushNamed(mainMenuRoute);
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );

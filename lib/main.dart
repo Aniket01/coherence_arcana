@@ -3,6 +3,7 @@ import 'package:coherence_arcana/views/level_selection_view.dart';
 import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:coherence_arcana/views/main_menu_view.dart';
 import 'package:coherence_arcana/routes.dart';
+import 'package:coherence_arcana/views/tutorial_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         gamelvl2: (context) => CoherenceArcanaGame(levelData: gameLevels[1]),
         gamelvl3: (context) => CoherenceArcanaGame(levelData: gameLevels[2]),
         gamelvl4: (context) => CoherenceArcanaGame(levelData: gameLevels[3]),
+        tutorial: (context) => TutorialView(),
       },
     );
   }
