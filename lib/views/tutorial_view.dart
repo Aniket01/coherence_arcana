@@ -72,6 +72,7 @@ class _TutorialViewState extends State<TutorialView> {
                     // Title
                     Text(
                       item.title,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

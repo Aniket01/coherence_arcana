@@ -15,9 +15,9 @@ class TutorialPage {
 // Data for the tutorial pages
 final List<TutorialPage> tutorialData = [
   TutorialPage(
-    imagePath: 'assets/images/tutorial_1.png',
-    title: 'Welcome!',
-    description: 'Explore all the features our app has to offer.',
+    imagePath: 'assets/images/large.png',
+    title: 'Welcome to Coherence Arcana!',
+    description: 'Explore how to play this game.',
   ),
   TutorialPage(
     imagePath: 'assets/images/tutorial_2.png',
