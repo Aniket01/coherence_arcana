@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
-// import '../player_progress/player_progress.dart';
 import 'package:coherence_arcana/widgets/game_theme.dart';
 import '../style/responsive_screen.dart';
 import '../level_selection/levels.dart';
@@ -28,7 +27,7 @@ class LevelSelectionScreen extends StatelessWidget {
                 child: Text(
                   'Select level',
                   style: GoogleFonts.pressStart2p().copyWith(
-                    fontSize: 12,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

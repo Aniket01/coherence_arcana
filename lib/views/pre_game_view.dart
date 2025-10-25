@@ -1,5 +1,6 @@
 import 'package:coherence_arcana/level_selection/levels.dart';
 import 'package:coherence_arcana/views/coherence_arcana_game.dart';
+import 'package:coherence_arcana/widgets/game_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:async'; // Required for Timer
 
@@ -64,7 +65,12 @@ class _PreGameViewState extends State<PreGameView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Memorize'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Memorize'),
+        centerTitle: true,
+        backgroundColor: backgroundColor,
+      ),
+      backgroundColor: backgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -48,7 +48,7 @@ class MainMenuView extends StatelessWidget {
               },
               child: Text('Tutorial'),
             ),
-            _gap,
+            const SizedBox(height: 60),
           ],
         ),
       ),

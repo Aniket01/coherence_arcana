@@ -39,7 +39,16 @@ class PostGameView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Final Score: ${scoreData.score}',
+              'Final Score:',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.deepPurple,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '${scoreData.score}',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
