@@ -33,6 +33,11 @@ Use your limited **Artifact Cards** to undo mistakes or stabilize the system, bu
 
 5.  **Measure:**
     Once your circuit is ready, press **Measure** to finalize it and calculate your score.
+## Levels
+* Level 1: Bell State.
+* Level 2: Swap 2 Qubits using CNOT Gate.
+* Level 3: 3 Qubit GHZ state.
+* Level 4: Quantum circuit simulating Superdense Coding.
 
 ## 🧮 Scoring System
 
@@ -54,3 +59,5 @@ Use your limited **Artifact Cards** to undo mistakes or stabilize the system, bu
 
 * **Language:** Dart/Flutter
 * **Platform:** Web, Android
+## Watch the walkthrough video⬇️:
+[![Watch the video](https://img.youtube.com/vi/E8e3nEWUhs0/hqdefault.jpg)](https://youtu.be/E8e3nEWUhs0?si=BHCTO_9e5xXGc5lt)
