@@ -1,4 +1,4 @@
-# 🧩 Coherence Arcana
+# Coherence Arcana
 Coherence Arcana is a strategy–memory puzzle set in the mysterious realm of quantum circuits.
 As Player, your task is simple but perilous — recreate a fleeting quantum circuit before decoherence consumes it.
 
@@ -12,7 +12,7 @@ Use your limited **Artifact Cards** to undo mistakes or stabilize the system, bu
 [Android APK](https://github.com/Aniket01/coherence_arcana/releases/download/v1.0.0/coherence_arcana_v1.0.apk) <br/>
 [Ready to play Web Version](https://coherence-arcana-v1-0-0.netlify.app/)
 
-## 🎮 Gameplay Overview
+##  Gameplay Overview
 
 1.  **Observe:**
     At the start of each round, you’ll briefly see a completed quantum circuit.
