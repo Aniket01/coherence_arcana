@@ -11,6 +11,7 @@ class Score {
     List<List<CardData?>> boardCells,
     double moves,
     int? artifactTaps,
+    int? cardsRemaining,
   ) {
     // Normalize boardCells to a matrix of nullable ids (String?)
     List<List<String?>> toIdMatrix(List<List<CardData?>> matrix) {
@@ -67,6 +68,7 @@ class Score {
       }
 
       s -= (artifactTaps ?? 0) * 10.0;
+      s -= (cardsRemaining ?? 0) * 5.0;
 
       // Clamp score between 0 and 100.
       score = s.clamp(0.0, 100.0).toDouble();

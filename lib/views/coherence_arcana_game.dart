@@ -213,12 +213,17 @@ class _CoherenceArcanaGameState extends State<CoherenceArcanaGame> {
       setState(() {
         audioController.playSfx(SfxType.buttonClick);
       });
+      // Count non-null cards in player hand
+      final int remainingCards = _playerHand
+          .where((card) => card != null)
+          .length;
       final gameScore = Score(level: levelData.levelNumber);
       gameScore.calculate(
         _boardCells,
         _decoherenceMeterProgress,
         _artifactTaps,
-      ); // update gameScore object properties
+        remainingCards, // Pass count of non-null cards
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

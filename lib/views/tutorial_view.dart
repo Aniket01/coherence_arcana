@@ -82,11 +82,12 @@ class _TutorialViewState extends State<TutorialView> {
 
                     // Description
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(
                         item.description,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                        softWrap: true,
                       ),
                     ),
                   ],

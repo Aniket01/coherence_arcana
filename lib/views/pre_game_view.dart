@@ -75,6 +75,19 @@ class _PreGameViewState extends State<PreGameView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              'assets/images/goal_${(widget.level + 1)}.png',
+              height: 300,
+              // Add an error builder for robustness
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.image_not_supported,
+                  size: 300,
+                  color: Colors.grey,
+                );
+              },
+            ),
+            const SizedBox(height: 20),
             const Text(
               'Game starting in...',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
