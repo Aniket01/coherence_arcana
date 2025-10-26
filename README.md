@@ -8,6 +8,7 @@ As you build, the **Decoherence Meter** rises with each action. If it fills up, 
 Use your limited **Artifact Cards** to undo mistakes or stabilize the system, but remember — every artifact use comes at a price.
 
 # 🎮 Play The Game Here ⬇️:
+## For Best Experience play on Android!
 [Android APK](https://github.com/Aniket01/coherence_arcana/releases/download/v1.0.0/coherence_arcana_v1.0.apk) <br/>
 [Ready to play Web Version](https://coherence-arcana-v1-0-0.netlify.app/)
 
